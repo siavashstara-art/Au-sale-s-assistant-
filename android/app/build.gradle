@@ -2,6 +2,12 @@ plugins {
     id 'com.android.application'
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace 'com.clinicyar.vip'
     compileSdk 34
@@ -14,12 +20,29 @@ android {
         versionName "1.0.0-VIP"
     }
 
+    signingConfigs {
+        release {
+            def ksFile = System.getenv("KEYSTORE_FILE") ?: keystoreProperties['storeFile'] ?: "luminamed-release-key.jks"
+            def ksFileObj = file(ksFile)
+            if (ksFileObj.exists()) {
+                storeFile ksFileObj
+                storePassword System.getenv("KEYSTORE_PASSWORD") ?: keystoreProperties['storePassword'] ?: "LuminaMedVIP2026!"
+                keyAlias System.getenv("KEY_ALIAS") ?: keystoreProperties['keyAlias'] ?: "luminamed_vip_key"
+                keyPassword System.getenv("KEY_PASSWORD") ?: keystoreProperties['keyPassword'] ?: "LuminaMedVIP2026!"
+                enableV1Signing true
+                enableV2Signing true
+                enableV3Signing true
+                enableV4Signing true
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release.storeFile != null ? signingConfigs.release : signingConfigs.debug
         }
         debug {
             applicationIdSuffix ".debug"

@@ -3,7 +3,7 @@ import serviceHairImg from '../assets/images/service_hair_transplant_17905307153
 import serviceDentalImg from '../assets/images/service_dental_veneers_1790530725736.jpg';
 import serviceLaserImg from '../assets/images/service_laser_skincare_1790530736195.jpg';
 
-export type LanguageCode = 'fa' | 'en' | 'es' | 'ar' | 'ku' | 'az' | 'tr';
+export type LanguageCode = 'fa' | 'en' | 'es' | 'ar' | 'ku' | 'ps' | 'az' | 'tr' | 'ru';
 
 export interface LanguageOption {
   code: LanguageCode;
@@ -14,8 +14,10 @@ export interface LanguageOption {
 }
 
 export const LANGUAGES: LanguageOption[] = [
-  { code: 'fa', label: 'فارسی', nativeName: 'فارسی (ایران)', dir: 'rtl', voiceLang: 'fa-IR' },
+  { code: 'fa', label: 'فارسی', nativeName: 'فارسی (ایران/افغانستان)', dir: 'rtl', voiceLang: 'fa-IR' },
+  { code: 'ps', label: 'پښتو', nativeName: 'پښتو (پشتو)', dir: 'rtl', voiceLang: 'ps-AF' },
   { code: 'en', label: 'English', nativeName: 'English (Intl)', dir: 'ltr', voiceLang: 'en-US' },
+  { code: 'ru', label: 'Русский', nativeName: 'Русский (RU/CIS)', dir: 'ltr', voiceLang: 'ru-RU' },
   { code: 'es', label: 'Español', nativeName: 'Español (ES/LATAM)', dir: 'ltr', voiceLang: 'es-ES' },
   { code: 'ar', label: 'العربية', nativeName: 'العربية (الخليج/العراق)', dir: 'rtl', voiceLang: 'ar-SA' },
   { code: 'ku', label: 'کوردی', nativeName: 'کوردی (سۆرانی)', dir: 'rtl', voiceLang: 'ar-IQ' },
@@ -272,6 +274,68 @@ export const TRANSLATIONS: Record<LanguageCode, TranslationStrings> = {
     warrantyCardTitle: 'Dijital QR Garanti Kartı Oluşturucu',
     quickQuizTitle: '30 Saniyede Stressiz Tedavi Bulucu (DEHB Dostu)',
     critiqueSectionTitle: 'Uzman UX Eleştirisi ve Yaratıcı İnovasyonlar',
+  },
+  ps: {
+    brandPersian: 'ځلایار VIP (کلینیک‌یار)',
+    brandEnglish: 'LuminaMed VIP Clinic',
+    ecosystemSubtitle: 'د پنځون ایکوسیستم | د نړۍ نوی میټاورسیټي ښار | توان سټیج FBNM',
+    heroHookBadge: 'د معلولینو د لاسرسي (WCAG) او د ADHD تمرکز لپاره لومړنی ځانګړی طبي او ښکلا سیسټم',
+    heroTitle: 'ستاسو ځلیدونکې ښکلا او موسکا — په اسانه قسطونو او د ۵ ستوري هوټل سره د روغتیا سیاحت VIP کڅوړې',
+    heroDesc: 'د مایکروګرافټ ویښتانو او وروځو کرل، سویسري غاښونو ایمپلانټ او لمینټ، ۲۰۲۶ الکساندرایت لیزر او د ښکلا جراحي؛ د رسمي ډیجیټل QR تضمین کارت او ژباړونکي سره.',
+    domesticModeBtn: 'د ایران داخل ناروغان (تومان + د صیادي چک قسطونه)',
+    tourismModeBtn: 'نړیوال روغتیا سیاحت (USD / AED / EUR + ۵★ هوټل)',
+    calcModalBtn: 'د قسطونو هوښیار ماشین‌حساب',
+    storyModalBtn: 'د کلینیک ۱-کلیک سټوري جوړونکی',
+    aiModalBtn: 'د ښکلا هوښیار سلاکار (AI)',
+    a11yBtn: 'لاسرسی او د ADHD تمرکز حالت',
+    pwaInstallBtn: 'د اپلیکیشن فوري نصب (PWA)',
+    vipPlansBtn: 'د کلینیکونو VIP ګډون',
+    affiliateBtn: 'د بازارموندنې کلب (۲۵٪ کمیشن)',
+    githubBtn: 'مستقیم GitHub Push او APK/AAB',
+    flashDealLabel: 'د نن ورځې ځانګړي تخفیفونه:',
+    departmentsTitle: '۷ تخصصي څانګې او ۱۰ طلایي تضمین شوي کڅوړې',
+    allDepartments: 'ټولې څانګې (۱۰ خدمتونه)',
+    cashPriceLabel: 'نغدي بیه:',
+    monthlyCheckLabel: 'میاشتنی قسط (صیادي چک):',
+    tourismPackageLabel: 'د روغتیا سیاحت بشپړ VIP کڅوړه:',
+    addToCartBtn: 'د VIP نوبت ثبتول',
+    calcInstallmentBtn: 'د قسط محاسبه',
+    readAloudBtn: 'غږیز لوستل',
+    beforeAfterTitle: 'مخکې او وروسته ګالري + د ډیجیټل QR تضمین کارت صادرول',
+    warrantyCardTitle: 'د کلینیک ډیجیټل QR تضمین کارت صادرول',
+    quickQuizTitle: 'په ۳۰ ثانیو کې پرته له فشاره د خدمت ټاکل (د ADHD تمرکز لپاره)',
+    critiqueSectionTitle: 'مسلکي UX کره کتنه او په LuminaMed VIP کې نوي نوښتونه',
+  },
+  ru: {
+    brandPersian: 'LuminaMed VIP (КлиникЯр)',
+    brandEnglish: 'Эстетическая Медицина и Медтуризм',
+    ecosystemSubtitle: 'Экосистема Созидания | Новый МетаверСити Мира | FBNM Stage',
+    heroHookBadge: 'Первая интеллектуальная платформа эстетической медицины с поддержкой WCAG и режима концентрации СДВГ',
+    heroTitle: 'Ваша идеальная улыбка, волосы и молодость — VIP медицинский туризм (Отель 5★ + Трансфер) и рассрочка',
+    heroDesc: 'Микрографт пересадка волос и бровей, швейцарские зубные импланты и виниры, александритовый лазер 2026 и ринопластика с официальным цифровым QR-сертификатом гарантии.',
+    domesticModeBtn: 'Внутренние пациенты (Томан + Рассрочка по чекам)',
+    tourismModeBtn: 'Международный Медтуризм (USD / AED / EUR + Отель 5★)',
+    calcModalBtn: 'Калькулятор рассрочки (3–12 мес.)',
+    storyModalBtn: '1-Клик Генератор Stories HD',
+    aiModalBtn: 'ИИ-Консультант Красоты',
+    a11yBtn: 'Доступность и СДВГ Фокус',
+    pwaInstallBtn: 'Установить приложение (PWA)',
+    vipPlansBtn: 'VIP Подписка для Клиник',
+    affiliateBtn: 'Партнерский Клуб (25% комиссия)',
+    githubBtn: 'GitHub Push и APK/AAB',
+    flashDealLabel: 'Горящие акции клиники сегодня:',
+    departmentsTitle: '7 Специализированных отделений и 10 VIP пакетов с гарантией',
+    allDepartments: 'Все отделения (10 пакетов)',
+    cashPriceLabel: 'Цена по акции:',
+    monthlyCheckLabel: 'Ежемесячный платеж:',
+    tourismPackageLabel: 'VIP Пакет Медтуризма (Все включено):',
+    addToCartBtn: 'Забронировать VIP визит',
+    calcInstallmentBtn: 'Рассчитать рассрочку',
+    readAloudBtn: 'Озвучить текст',
+    beforeAfterTitle: 'Галерея До и После + Цифровой QR-Сертификат Гарантии',
+    warrantyCardTitle: 'Выпустить Цифровой QR-Сертификат Гарантии',
+    quickQuizTitle: 'Подбор процедуры за 30 секунд без стресса (Режим СДВГ)',
+    critiqueSectionTitle: 'Экспертный UX-разбор и инновации LuminaMed VIP',
   },
 };
 
@@ -762,9 +826,186 @@ export const VIP_PLANS: VipSubscriptionPlan[] = [
     commissionToman: 14000000,
     badgeFa: 'حداکثر سود و پرستیژ بین‌المللی',
     featuresFa: [
-      'پوشش کامل شعب کلینیک در داخل و خارج از کشور (۷ زبان کامل)',
+      'پوشش کامل شعب کلینیک در داخل و خارج از کشور (۸ زبان کامل شامل پشتو و عربی)',
       'سورس‌کد کامل اندروید + پوش اتوماتیک گیت‌هاب و آپدیت رایگان ۲ ساله',
-      'مشاوره اختصاصی جذب بیماران دلاری از عمان، عراق، امارات، ترکیه و اروپا',
+      'مشاوره اختصاصی جذب بیماران دلاری از افغانستان، عمان، عراق، امارات، ترکیه و اروپا',
     ],
   },
 ];
+
+export interface InAppAdPackage {
+  id: string;
+  tierNameFa: string;
+  durationFa: string;
+  dailyEquivalentFa: string;
+  priceToman: number;
+  priceUSD: number;
+  targetAudienceFa: string;
+  placementFa: string;
+  estimatedViewsFa: string;
+  badgeFa: string;
+  featuresFa: string[];
+}
+
+export const IN_APP_AD_PACKAGES: InAppAdPackage[] = [
+  {
+    id: 'ad-flash-24h',
+    tierNameFa: 'پکیج ۱: استوری و بنر تخفیف لحظه‌ای ۲۴ ساعته (تست بازدهی)',
+    durationFa: '۲۴ ساعت (۱ روز کامل)',
+    dailyEquivalentFa: 'فقط ۲۹۰ هزار تومان',
+    priceToman: 290000,
+    priceUSD: 5,
+    targetAudienceFa: 'مناسب فیشیالیست‌ها، مراکز لیزر، میکاپ‌آرتیست‌ها و آف‌های لحظه‌ای ژل و بوتاکس',
+    placementFa: 'نوار جشنواره تخفیف بالای اپ + ویترین پیشنهاد ویژه روز',
+    estimatedViewsFa: '۱,۵۰۰ تا ۳,۰۰۰ بازدید هدفمند زیباجویان',
+    badgeFa: 'اقتصادی‌ترین شروع',
+    featuresFa: [
+      'نمایش در نوار تخفیف لحظه‌ای بالای صفحه اصلی',
+      'دکمه مستقیم رزرو نوبت در واتساپ و پیج اینستاگرام شما',
+      'طراحی رایگان ۱ پوستر استوری ۱۰۸۰×۱۹۲۰ در استوری‌ساز اپ',
+    ],
+  },
+  {
+    id: 'ad-dept-7d',
+    tierNameFa: 'پکیج ۲: کارت اسپانسری هفتگی در صدر دپارتمان تخصصی',
+    durationFa: '۷ روز (۱ هفته کامل)',
+    dailyEquivalentFa: 'روزی فقط ۱۴۰ هزار تومان!',
+    priceToman: 980000,
+    priceUSD: 15,
+    targetAudienceFa: 'مناسب مطب‌های دندانپزشکی، کلینیک‌های پوست و مو، تزریق فیلر و مراکز لیزر',
+    placementFa: 'پین شدن در ردیف اول دپارتمان انتخابی با نشان طلایی «پیشنهاد ویژه VIP»',
+    estimatedViewsFa: '۸,۰۰۰ تا ۱۵,۰۰۰ بازدید هدفمند در هفته',
+    badgeFa: 'پرفروش‌ترین تعرفه هفتگی',
+    featuresFa: [
+      'نمایش ویژه در صدر دپارتمان تخصصی (کاشت مو، دندان، ژل، لیزر یا جراحی)',
+      'اتصال مستقیم آگهی شما به ماشین‌حساب اقساط چک صیادی',
+      'درج لوگو، آدرس شهر، درصد تخفیف و شماره تماس مستقیم',
+    ],
+  },
+  {
+    id: 'ad-gold-30d',
+    tierNameFa: 'پکیج ۳: ویترین طلایی ماهانه کلینیک‌ها و پزشکان + معرفی در AI',
+    durationFa: '۳۰ روز (۱ ماه کامل)',
+    dailyEquivalentFa: 'روزی فقط ۸۱ هزار تومان!',
+    priceToman: 2450000,
+    priceUSD: 39,
+    targetAudienceFa: 'مناسب کلینیک‌های زیبایی، جراحان زیبایی، مراکز کاشت مو و ایمپلنت',
+    placementFa: 'ویترین دائمی صفحه اول + پیشنهاد نام کلینیک در مشاور هوشمند زیبایی',
+    estimatedViewsFa: '۳۵,۰۰۰ تا ۶۰,۰۰۰ بازدید هدفمند ماهانه',
+    badgeFa: 'بهترین ارزش اقتصادی (پیشنهاد ویژه)',
+    featuresFa: [
+      '۳۰ روز حضور مداوم در ویترین تبلیغات تاییدشده صفحه اصلی',
+      'معرفی اولویت‌دار کلینیک شما به زیباجویان در بخش مشاوره هوشمند',
+      'صدور کارت ضمانت‌نامه دیجیتال QR با نام کلینیک شما برای مراجعین',
+    ],
+  },
+  {
+    id: 'ad-tourism-30d',
+    tierNameFa: 'پکیج ۴: تبلیغ ۸ زبانه توریسم سلامت (جذب بیمار دلاری خارجی)',
+    durationFa: '۳۰ روز (بین‌المللی ۸ زبانه)',
+    dailyEquivalentFa: 'روزی ۱۳۰ هزار تومان (جذب بیمار ارزی)',
+    priceToman: 3900000,
+    priceUSD: 65,
+    targetAudienceFa: 'ویژه کلینیک‌های مشهد، تهران، شیراز، تبریز و ارومیه برای جذب بیمار خارجی',
+    placementFa: 'نمایش اختصاصی در حالت «توریسم سلامت» به ۸ زبان (عربی، پشتو، کردی، ترکی، انگلیسی...)',
+    estimatedViewsFa: '۲۰,۰۰۰+ بازدید مراجعین عراق، عمان، افغانستان، ترکیه و اروپا',
+    badgeFa: 'بازگشت سرمایه ۱۵ برابری با ۱ بیمار',
+    featuresFa: [
+      'ترجمه خودکار آگهی کلینیک شما به ۸ زبان (پشتو، عربی، کردی، ترکی، انگلیسی، اسپانیایی، آذری و فارسی)',
+      'نمایش قیمت پکیج به دلار (USD)، درهم (AED) و یورو (EUR)',
+      'دریافت مستقیم فرم رزرو بیماران خارجی در واتساپ کلینیک',
+    ],
+  },
+  {
+    id: 'ad-b2b-supplier',
+    tierNameFa: 'پکیج ۵: تبلیغ تامین‌کنندگان ژل، ایمپلنت و دستگاه‌های زیبایی (B2B)',
+    durationFa: '۳۰ روز (ویژه همکاران و تجهیزات)',
+    dailyEquivalentFa: 'روزی فقط ۶۱ هزار تومان!',
+    priceToman: 1850000,
+    priceUSD: 29,
+    targetAudienceFa: 'ویژه واردکنندگان ژل و بوتاکس، شرکت‌های ایمپلنت، فروشندگان دستگاه لیزر و هایفو و مدرسین زیبایی',
+    placementFa: 'بخش ویژه تامین‌کنندگان و تجهیز کلینیک‌ها + پنل مدیران کلینیک',
+    estimatedViewsFa: 'نمایش مستقیم به ۵۰۰+ پزشک، دندانپزشک و مدیر کلینیک',
+    badgeFa: 'ویژه پخش متریال و تجهیزات',
+    featuresFa: [
+      'معرفی مستقیم برند ژل، بوتاکس، ایمپلنت یا دستگاه لیزر به پزشکان',
+      'امکان درج شرایط فروش اقساطی دستگاه و متریال با چک صیادی',
+      'دکمه دریافت کاتالوگ و لیست قیمت همکاری در واتساپ',
+    ],
+  },
+];
+
+export interface SponsoredAdItem {
+  id: string;
+  category: 'clinic' | 'salon_facial' | 'supplier_b2b' | 'tourism';
+  categoryLabelFa: string;
+  advertiserName: string;
+  cityFa: string;
+  offerTitleFa: string;
+  discountPercent: number;
+  priceTextFa: string;
+  installmentBadgeFa: string;
+  phone: string;
+  instagram: string;
+  verifiedBadge: string;
+}
+
+export const INITIAL_SPONSORED_ADS: SponsoredAdItem[] = [
+  {
+    id: 'sp-1',
+    category: 'clinic',
+    categoryLabelFa: 'کلینیک کاشت مو و زیبایی',
+    advertiserName: 'کلینیک فوق‌تخصصی رویال کاشت الهیه',
+    cityFa: 'تهران - الهیه / پذیرش از سراسر کشور',
+    offerTitleFa: 'کاشت مو میکروگرافت پرتراکم + مزوتراپی رایگان با ضمانت‌نامه کتبی',
+    discountPercent: 25,
+    priceTextFa: 'پیش‌پرداخت ۷ میلیون + اقساط ۸ ماهه چک صیادی',
+    installmentBadgeFa: 'اقساط بدون بهره با چک صیادی',
+    phone: '09120001122',
+    instagram: '@RoyalKasht.VIP',
+    verifiedBadge: 'تأییدشده درخشش‌یار VIP',
+  },
+  {
+    id: 'sp-2',
+    category: 'tourism',
+    categoryLabelFa: 'دندانپزشکی زیبایی و توریسم سلامت',
+    advertiserName: 'مرکز ایمپلنت و لمینت دیجیتال دکتر آریامهر',
+    cityFa: 'مشهد و شیراز (پذیرش VIP مراجعین افغانستان، عراق و عمان)',
+    offerTitleFa: 'پکیج ۱۶ واحد لمینت سرامیکی سوئیسی + ۳ شب هتل ۵ ستاره رایگان',
+    discountPercent: 30,
+    priceTextFa: 'شروع از هر واحد ۶.۵ میلیون تومان | پکیج توریسم: ۱,۳۵۰ دلار',
+    installmentBadgeFa: 'پشتیبانی فارسی، پشتو و عربی + اقساط ۱۰ ماهه',
+    phone: '09120003344',
+    instagram: '@DrAryamehr.Dental',
+    verifiedBadge: 'پکیج طلایی توریسم سلامت',
+  },
+  {
+    id: 'sp-3',
+    category: 'salon_facial',
+    categoryLabelFa: 'مرکز لیزر و فیشیال تخصصی پوست',
+    advertiserName: 'مرکز لیزر و جوانسازی پوست نیلوفرانه',
+    cityFa: 'تهران / کرج / تبریز',
+    offerTitleFa: 'پکیج لیزر فول‌بادی الکساندرایت ۲۰۲۶ + فیشیال VIP هیدرافیشیال',
+    discountPercent: 35,
+    priceTextFa: 'فقط ۸۹۰,۰۰۰ تومان در ماه (تضمین ثبات قیمت تا پایان جلسات)',
+    installmentBadgeFa: 'نوبت‌دهی فوری بدون معطلی',
+    phone: '09120005566',
+    instagram: '@NiloofarLaser.IR',
+    verifiedBadge: 'آگهی ویژه روز',
+  },
+  {
+    id: 'sp-4',
+    category: 'supplier_b2b',
+    categoryLabelFa: 'تامین‌کننده تجهیزات و متریال زیبایی (B2B)',
+    advertiserName: 'شرکت طب‌گستر پارس (واردکننده رسمی دستگاه لیزر و ژل)',
+    cityFa: 'ارسال فوری به کلینیک‌های سراسر ایران',
+    offerTitleFa: 'فروش اقساطی دستگاه لیزر تیتانیوم ۲۰۲۶ و هایفو ۷ بعدی + فیلرهای لیبل‌دار وزارت بهداشت',
+    discountPercent: 20,
+    priceTextFa: '۲۰٪ پیش‌پرداخت + اقساط ۱۲ ماهه ویژه پزشکان و کلینیک‌ها',
+    installmentBadgeFa: 'ویژه تجهیز مطب و کلینیک (B2B)',
+    phone: '09120007788',
+    instagram: '@TebGostar.Med',
+    verifiedBadge: 'تامین‌کننده رسمی همکار',
+  },
+];
+

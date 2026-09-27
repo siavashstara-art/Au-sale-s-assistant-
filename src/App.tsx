@@ -29,6 +29,8 @@ import {
   Copy,
   Send,
   X,
+  Megaphone,
+  Lock,
 } from 'lucide-react';
 import {
   LANGUAGES,
@@ -36,14 +38,18 @@ import {
   DEPARTMENTS,
   CLINIC_SERVICES,
   BEFORE_AFTER_CASES,
+  INITIAL_SPONSORED_ADS,
+  IN_APP_AD_PACKAGES,
   LanguageCode,
   ClinicServiceItem,
   BeforeAfterCase,
+  SponsoredAdItem,
 } from './data/clinicData';
 import { usePWAInstall } from './hooks/usePWAInstall';
 import { StoryMakerModal } from './components/StoryMakerModal';
 import { InstallmentCalculatorModal } from './components/InstallmentCalculatorModal';
 import { DigitalWarrantyModal } from './components/DigitalWarrantyModal';
+import { InAppAdsModal } from './components/InAppAdsModal';
 import {
   VipPlansModal,
   AffiliateModal,
@@ -86,6 +92,9 @@ export default function App() {
   const [isGithubOpen, setIsGithubOpen] = useState(false);
   const [isA11yOpen, setIsA11yOpen] = useState(false);
   const [isPwaGuideOpen, setIsPwaGuideOpen] = useState(false);
+  const [isAdsModalOpen, setIsAdsModalOpen] = useState(false);
+  const [sponsoredAds, setSponsoredAds] = useState<SponsoredAdItem[]>(INITIAL_SPONSORED_ADS);
+  const [adCategoryFilter, setAdCategoryFilter] = useState<string>('all');
 
   // Loyalty Club & VIP Booking Cart State
   const [cart, setCart] = useState<ClinicServiceItem[]>([]);
@@ -177,7 +186,7 @@ export default function App() {
         body: JSON.stringify({
           mode: aiMode,
           prompt: queryToUse,
-          lang: lang === 'en' || lang === 'es' ? 'en' : 'fa',
+          lang,
         }),
       });
       const data = await res.json();
@@ -196,9 +205,24 @@ export default function App() {
     }
   };
 
+  const renderBionicText = (text: string) => {
+    if (!a11y.bionicReading) return text;
+    return text.split(' ').map((word, idx) => {
+      const mid = Math.max(1, Math.ceil(word.length * 0.45));
+      return (
+        <span key={idx} className="inline">
+          <strong className="font-black text-emerald-950 underline decoration-amber-400/70">
+            {word.slice(0, mid)}
+          </strong>
+          {word.slice(mid)}{' '}
+        </span>
+      );
+    });
+  };
+
   const containerClasses = [
     'min-h-screen transition-colors',
-    a11y.highContrast ? 'bg-white text-black' : 'bg-white text-slate-900',
+    a11y.highContrast ? 'bg-white text-black a11y-high-contrast' : 'bg-white text-slate-900',
     a11y.fontScale === 'lg' ? 'a11y-font-lg' : '',
     a11y.fontScale === 'xl' ? 'a11y-font-xl' : '',
     a11y.wideSpacing ? 'a11y-spacing-wide' : '',
@@ -305,10 +329,21 @@ export default function App() {
             <a href="#ai-consultant" className="hover:text-emerald-600 transition-colors">
               {t.aiModalBtn}
             </a>
+            <a href="#in-app-ads" className="text-rose-700 hover:text-rose-900 font-extrabold transition-colors">
+              📢 تبلیغات اقتصادی کلینیک‌ها
+            </a>
           </nav>
 
-          {/* Zone 3: Primary Actions (PWA Install + VIP / Affiliate) */}
+          {/* Zone 3: Primary Actions (PWA Install + Ads + GitHub/API Security) */}
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsAdsModalOpen(true)}
+              className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+            >
+              <Megaphone className="w-4 h-4" />
+              <span className="hidden sm:inline">درج تبلیغ اقتصادی</span>
+            </button>
             <button
               type="button"
               onClick={handlePwaClick}
@@ -471,7 +506,7 @@ export default function App() {
                 <span aria-hidden="true">·</span>
                 <span>اقساط بدون ضامن با چک صیادی</span>
                 <span aria-hidden="true">·</span>
-                <span className="text-amber-700">۷ زبان زنده دنیا + تمرکز ADHD</span>
+                <span className="text-amber-700">۹ زبان زنده دنیا (شامل پشتو، روسی، عربی، کردی و ترکی) + تمرکز ADHD</span>
               </div>
             </div>
 
@@ -592,7 +627,7 @@ export default function App() {
                     : 'bg-white text-slate-700 border border-slate-200 hover:border-emerald-400'
                 }`}
               >
-                {lang === 'en' || lang === 'es' || lang === 'az' || lang === 'tr'
+                {lang === 'en' || lang === 'es' || lang === 'az' || lang === 'tr' || lang === 'ru'
                   ? dept.nameEn
                   : dept.nameFa}
               </button>
@@ -663,7 +698,7 @@ export default function App() {
 
                       {!a11y.adhdFocusMode && (
                         <p className="text-xs text-slate-600 leading-relaxed mb-3">
-                          {displaySub}
+                          {renderBionicText(displaySub)}
                         </p>
                       )}
 
@@ -675,7 +710,7 @@ export default function App() {
                         {displayPoints.map((pt, i) => (
                           <div key={i} className="flex items-start gap-1.5 text-xs font-bold text-slate-800">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                            <span>{pt}</span>
+                            <span>{renderBionicText(pt)}</span>
                           </div>
                         ))}
                       </div>
@@ -1216,53 +1251,234 @@ export default function App() {
         </div>
       </section>
 
+      {/* In-App Advertising Showcase & Economical Rate Table Section (New User Request) */}
+      <section id="in-app-ads" className="py-12 px-4 sm:px-6 bg-gradient-to-b from-amber-50/50 via-white to-emerald-50/30 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div>
+              <div className="text-xs font-extrabold text-rose-700 mb-1 flex items-center gap-1.5">
+                <Megaphone className="w-4 h-4" />
+                ۰۴. شبکه تبلیغات درون‌برنامه‌ای اقتصادی ویژه کلینیک‌ها، پزشکان، سالن‌ها و تامین‌کنندگان زیبایی
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+                ویترین پیشنهادهای اسپانسری + تعرفه‌های اقتصادی تبلیغات (از روزی ۶۱ تا ۲۹۰ هزار تومان)
+              </h2>
+              <p className="text-xs md:text-sm text-slate-600 mt-1">
+                طراحی‌شده با نرخ‌های کاملاً اقتصادی و قابل انجام برای همه فعالین زیبایی — بازگشت بیش از ۱۰ برابر هزینه تبلیغ تنها با جذب ۱ مراجعه‌کننده!
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsAdsModalOpen(true)}
+              className="px-5 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs md:text-sm flex items-center gap-2 shadow-md cursor-pointer self-start md:self-auto shrink-0"
+            >
+              <Megaphone className="w-4 h-4" />
+              مشاهده تعرفه‌ها و ثبت آنی تبلیغ کلینیک شما
+            </button>
+          </div>
+
+          {/* Economical Ad Rate Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mb-8">
+            {IN_APP_AD_PACKAGES.map((pkg) => (
+              <div
+                key={pkg.id}
+                className="bg-white rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-600 p-4 flex flex-col justify-between shadow-xs transition-all"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-1 mb-2">
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-amber-100 text-amber-900">
+                      {pkg.badgeFa}
+                    </span>
+                    <span className="text-[11px] font-mono font-bold text-slate-500">
+                      ${pkg.priceUSD}
+                    </span>
+                  </div>
+                  <h3 className="text-xs font-extrabold text-slate-900 leading-snug mb-1.5">
+                    {pkg.tierNameFa}
+                  </h3>
+                  <div className="text-base font-extrabold text-emerald-700 tabular-nums">
+                    {pkg.priceToman.toLocaleString('fa-IR')} تومان
+                  </div>
+                  <div className="text-[11px] font-bold text-rose-700 mt-0.5 mb-2">
+                    ({pkg.dailyEquivalentFa} / {pkg.durationFa})
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed mb-3">
+                    {pkg.targetAudienceFa}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAdsModalOpen(true)}
+                  className="w-full py-2 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-900 hover:text-white font-extrabold text-xs border border-emerald-200 transition-colors cursor-pointer"
+                >
+                  انتخاب و درج آگهی
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Filter Tabs for Active Sponsored Ads */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { id: 'all', label: 'همه آگهی‌های ویژه' },
+                { id: 'clinic', label: 'کلینیک‌های کاشت مو و زیبایی' },
+                { id: 'tourism', label: 'توریسم سلامت و دندانپزشکی' },
+                { id: 'salon_facial', label: 'مراکز لیزر و فیشیال پوست' },
+                { id: 'supplier_b2b', label: 'فروشندگان ژل، ایمپلنت و دستگاه (B2B)' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setAdCategoryFilter(tab.id)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                    adCategoryFilter === tab.id
+                      ? 'bg-slate-900 text-amber-300 shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            <span className="text-xs font-bold text-slate-500">
+              نمایش {sponsoredAds.length} آگهی فعال درون‌برنامه‌ای
+            </span>
+          </div>
+
+          {/* Sponsored Ads Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {sponsoredAds
+              .filter((ad) => adCategoryFilter === 'all' || ad.category === adCategoryFilter)
+              .map((ad) => (
+                <div
+                  key={ad.id}
+                  className="bg-white rounded-3xl border-2 border-amber-300/80 hover:border-emerald-600 p-5 shadow-xs flex flex-col justify-between transition-all"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-emerald-950 text-amber-300">
+                        📢 {ad.verifiedBadge} · {ad.categoryLabelFa}
+                      </span>
+                      <span className="text-xs font-extrabold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-lg">
+                        {ad.discountPercent}٪ تخفیف ویژه
+                      </span>
+                    </div>
+
+                    <h3 className="text-base md:text-lg font-extrabold text-slate-900 mb-1">
+                      {ad.advertiserName}
+                    </h3>
+                    <div className="text-xs font-bold text-slate-500 mb-2">
+                      📍 {ad.cityFa} · <span className="font-mono">{ad.instagram}</span>
+                    </div>
+
+                    <p className="text-xs md:text-sm font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-3">
+                      {ad.offerTitleFa}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <div>
+                      <div className="text-[11px] font-bold text-emerald-700">
+                        {ad.installmentBadgeFa}
+                      </div>
+                      <div className="text-xs font-extrabold text-slate-900">
+                        {ad.priceTextFa}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const msg = `سلام، آگهی ویژه «${ad.advertiserName}» (${ad.offerTitleFa}) را در اپلیکیشن درخشش‌یار VIP دیدم. لطفاً شرایط نوبت و تخفیف را ارسال فرمایید.`;
+                        window.open(
+                          `https://wa.me/${ad.phone.replace(/^0/, '98')}?text=${encodeURIComponent(msg)}`,
+                          '_blank',
+                          'noopener,noreferrer'
+                        );
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      رزرو مستقیم در واتساپ آگهی‌دهنده
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      </section>
+
       {/* Expert UX Critique & Creative Innovations Section (User Prompt Request) */}
       <section className="py-12 px-4 sm:px-6 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <div className="text-xs font-extrabold text-emerald-700 mb-1 flex items-center gap-1.5">
-              <Lightbulb className="w-4 h-4 text-amber-500" />
-              ۰۴. نقد کارشناسی و نوآوری‌های خلاقانه اضافه‌شده برای درخشش حداکثری برنامه
+          <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="text-xs font-extrabold text-emerald-700 mb-1 flex items-center gap-1.5">
+                <Lightbulb className="w-4 h-4 text-amber-500" />
+                ۰۵. نقد کارشناسی، اتوماسیون امن API و نوآوری‌های خلاقانه اضافه‌شده
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+                {t.critiqueSectionTitle}
+              </h2>
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
-              {t.critiqueSectionTitle}
-            </h2>
+            <button
+              type="button"
+              onClick={() => setIsGithubOpen(true)}
+              className="px-4 py-2.5 rounded-xl bg-slate-900 text-amber-300 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer self-start md:self-auto"
+            >
+              <Lock className="w-4 h-4" />
+              مشاهده داشبورد امنیت API و امضای APK/AAB
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs">
               <div className="text-xs font-extrabold text-emerald-700 mb-2">
-                ۱. نقد تم‌های تیره سنتی ← تغییر به زمینه سفید شاد و قلاب‌انداز
+                ۱. نقد تم‌های تیره ← زمینه سفید شاد و قلاب‌انداز
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 mb-2">
-                روانشناسی رنگ کلینیکی: سفیدی پاکیزه + سبز زمردی شاداب + رزگلد
+              <h3 className="text-sm md:text-base font-extrabold text-slate-900 mb-2">
+                روانشناسی رنگ کلینیکی: سفیدی پاکیزه + سبز زمردی + رزگلد
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                بسیاری از سایت‌های زیبایی با تم مشکی سنگین، حس اضطراب اتاق عمل را القا می‌کنند و برای افراد کم‌بینا یا دارای آستیگماتیسم (Halation Effect) خسته‌کننده هستند. ما زمینه اصلی را به <strong>سفید صدفی درخشان با کنتراست استاندارد ۱۰:۱</strong> تغییر دادیم تا حس پاکیزگی، امید و شادابی را در ۳ ثانیه اول به زیباجو منتقل کند.
+                سایت‌های زیبایی با تم مشکی سنگین، حس اضطراب اتاق عمل را القا می‌کنند و برای افراد دارای آستیگماتیسم خسته‌کننده هستند. ما زمینه اصلی را به <strong>سفید صدفی درخشان با کنتراست استاندارد ۱۰:۱</strong> تغییر دادیم تا حس پاکیزگی و شادابی را در ۳ ثانیه اول منتقل کند.
               </p>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
+            <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs">
               <div className="text-xs font-extrabold text-amber-700 mb-2">
-                ۲. مهندسی ویژه اختلال ADHD (جلوگیری از فلج تصمیم‌گیری)
+                ۲. مهندسی ویژه اختلال ADHD (رفع فلج تصمیم‌گیری)
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 mb-2">
-                خلاصه ۳ نکته‌ای دوپامین + فیلتر ۳۰ ثانیه‌ای + چک‌لیست تعاملی
+              <h3 className="text-sm md:text-base font-extrabold text-slate-900 mb-2">
+                خلاصه ۳ نکته‌ای دوپامین + مطالعه Bionic + چک‌لیست
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                مراجعین دارای ADHD در مواجهه با متن‌های طولانی پزشکی صفحه را می‌بندند. ما در این اپ <strong>«حالت تمرکز ADHD»</strong>، <strong>«خط‌کش دیداری دنبال‌کننده ماوس»</strong> و <strong>«باکس ۳ نکته‌ای سریع»</strong> را روی هر خدمت قرار دادیم تا بدون سردرگمی، قیمت قسطی و مدت نقاهت در یک نگاه دیده شود.
+                مراجعین دارای ADHD در مواجهه با متن‌های طولانی پزشکی صفحه را می‌بندند. با <strong>«حالت تمرکز ADHD»</strong>، <strong>«مطالعه سریع Bionic»</strong> و <strong>«فیلتر ۳۰ ثانیه‌ای هدف زیبایی»</strong>، قیمت قسطی و مدت نقاهت در یک نگاه دیده می‌شود.
               </p>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
+            <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs">
               <div className="text-xs font-extrabold text-rose-700 mb-2">
-                ۳. دسترس‌پذیری کامل توان‌جویان (WCAG AAA) + ۷ زبان زنده دنیا
+                ۳. پوشش ۹ زبان زنده دنیا (با افزودن پشتو و روسی)
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 mb-2">
-                خوانش صوتی هوشمند (TTS) + سوییچ آنی ۷ زبان منطقه‌ای و جهانی
+              <h3 className="text-sm md:text-base font-extrabold text-slate-900 mb-2">
+                جذب توریسم سلامت از روسیه، افغانستان، کشورهای عربی و ترکیه
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                با افزودن زبان‌های <strong>فارسی، انگلیسی، اسپانیایی، عربی، کردی، آذربایجانی و ترکی استانبولی</strong>، کلینیک‌های تهران، تبریز، ارومیه، سنندج، شیراز و مشهد می‌توانند بدون نیاز به مترجم، بیماران توریسم سلامت کل منطقه و اروپا را جذب کنند و افراد کم‌بینا نیز با دکمه <strong>«🔊 خوانش صوتی»</strong> تمام جزئیات را بشنوند.
+                با پوشش کامل <strong>فارسی، پشتو (پښتو)، روسی (Русский)، عربی، کردی، ترکی استانبولی، آذربایجانی، انگلیسی و اسپانیایی</strong>، کلینیک‌ها می‌توانند بیماران دلاری و یورویی را بدون نیاز به مترجم جذب کنند.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs">
+              <div className="text-xs font-extrabold text-emerald-900 mb-2">
+                ۴. اتوماسیون ضدخطای API + تبلیغات اقتصادی کلینیک‌ها
+              </div>
+              <h3 className="text-sm md:text-base font-extrabold text-slate-900 mb-2">
+                موتور مدار-شکن (Circuit-Breaker) + تبلیغات از ۲۹۰ هزار تومان
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                کلیدهای API کاملاً در سرور ایزوله شده‌اند و در صورت محدودیت کوتا، موتور آفلاین ۹ زبانه در <strong>کمتر از ۵ میلی‌ثانیه</strong> بدون خطا پاسخ می‌دهد. همچنین سیستم تبلیغات اقتصادی درون‌برنامه‌ای درآمد مستمر برای پلتفرم ایجاد می‌کند.
               </p>
             </div>
           </div>
@@ -1365,6 +1581,11 @@ export default function App() {
       <VipPlansModal isOpen={isVipPlansOpen} onClose={() => setIsVipPlansOpen(false)} />
       <AffiliateModal isOpen={isAffiliateOpen} onClose={() => setIsAffiliateOpen(false)} />
       <GithubAndAndroidModal isOpen={isGithubOpen} onClose={() => setIsGithubOpen(false)} />
+      <InAppAdsModal
+        isOpen={isAdsModalOpen}
+        onClose={() => setIsAdsModalOpen(false)}
+        onPublishAd={(newAd) => setSponsoredAds((prev) => [newAd, ...prev])}
+      />
       <AccessibilityModal
         isOpen={isA11yOpen}
         onClose={() => setIsA11yOpen(false)}

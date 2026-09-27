@@ -1,20 +1,29 @@
-name: Build ClinicYar VIP Android APK & AAB
+name: Build & Sign LuminaMed VIP (ClinicYar) Android APK, AAB & GitHub Release
 
 on:
   push:
     branches: [ "main", "master" ]
+    tags: [ "v*" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  build-android:
-    name: Build Release APK (CafeBazaar/Myket) & AAB (Google Play)
+  build-and-sign-android:
+    name: Build Signed Release APK (CafeBazaar/Myket) & AAB (Google Play) + GitHub Release
     runs-on: ubuntu-latest
+
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || 'LuminaMedVIP2026!' }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS || 'luminamed_vip_key' }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'LuminaMedVIP2026!' }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK 17 (Temurin)
         uses: actions/setup-java@v4
         with:
           java-version: '17'
@@ -25,19 +34,88 @@ jobs:
         with:
           gradle-version: '8.5'
 
-      - name: Build Release APK & AAB Bundle
+      - name: Prepare or Auto-Generate Production Release Keystore (.jks)
+        working-directory: ./android/app
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Decoding custom KEYSTORE_BASE64 from GitHub Secrets..."
+            echo "$KEYSTORE_BASE64" | base64 --decode > luminamed-release-key.jks
+          else
+            echo "Generating production RSA-2048 Release Keystore (luminamed-release-key.jks)..."
+            keytool -genkeypair -v \
+              -keystore luminamed-release-key.jks \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -alias "$KEY_ALIAS" \
+              -storepass "$KEYSTORE_PASSWORD" \
+              -keypass "$KEY_PASSWORD" \
+              -dname "CN=LuminaMed VIP ClinicYar, OU=Medical Tourism & Aesthetics, O=FBNM NewMetaverCity, L=Tehran, S=Tehran, C=IR"
+          fi
+
+      - name: Build Signed Release APK & Signed Release AAB Bundle
         working-directory: ./android
+        env:
+          KEYSTORE_FILE: luminamed-release-key.jks
         run: |
           gradle assembleRelease bundleRelease --no-daemon
 
-      - name: Upload Release APK (For CafeBazaar, Myket & Direct Install)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ClinicYar-VIP-Release-APK
-          path: android/app/build/outputs/apk/release/*.apk
+      - name: Package Signed Artifacts & Generate SHA-256 Signing Report
+        working-directory: ./android
+        run: |
+          mkdir -p release-dist
+          cp app/build/outputs/apk/release/*.apk release-dist/LuminaMed-VIP-v1.0.0-signed.apk
+          cp app/build/outputs/bundle/release/*.aab release-dist/LuminaMed-VIP-v1.0.0-signed.aab
+          cp app/luminamed-release-key.jks release-dist/luminamed-release-key.jks
+          sha256sum release-dist/LuminaMed-VIP-v1.0.0-signed.apk release-dist/LuminaMed-VIP-v1.0.0-signed.aab > release-dist/SHA256SUMS.txt
+          {
+            echo "=== LuminaMed VIP (ClinicYar VIP) Signed Release Certificate Report ==="
+            echo "Package Name: com.clinicyar.vip"
+            echo "Version: 1.0.0-VIP (Build ${{ github.run_number }})"
+            echo "Key Alias: $KEY_ALIAS"
+            echo ""
+            echo "=== SHA-256 Checksums ==="
+            cat release-dist/SHA256SUMS.txt
+            echo ""
+            echo "=== Keystore Certificate Fingerprints (For Google Play, CafeBazaar & Myket) ==="
+            keytool -list -v -keystore app/luminamed-release-key.jks -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" | grep -E "Alias name:|Creation date:|Owner:|SHA1:|SHA256:"
+          } > release-dist/release-signing-report.txt
+          cat release-dist/release-signing-report.txt
 
-      - name: Upload Release AAB (For Google Play Console)
+      - name: Upload Signed APK Artifact (For CafeBazaar, Myket & Direct Install)
         uses: actions/upload-artifact@v4
         with:
-          name: ClinicYar-VIP-GooglePlay-AAB
-          path: android/app/build/outputs/bundle/release/*.aab
+          name: LuminaMed-VIP-Signed-APK
+          path: android/release-dist/LuminaMed-VIP-v1.0.0-signed.apk
+
+      - name: Upload Signed AAB Artifact (For Google Play Console)
+        uses: actions/upload-artifact@v4
+        with:
+          name: LuminaMed-VIP-GooglePlay-Signed-AAB
+          path: android/release-dist/LuminaMed-VIP-v1.0.0-signed.aab
+
+      - name: Upload Keystore & SHA-256 Certificate Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: LuminaMed-VIP-Signing-Keystore-And-SHA256
+          path: |
+            android/release-dist/luminamed-release-key.jks
+            android/release-dist/SHA256SUMS.txt
+            android/release-dist/release-signing-report.txt
+
+      - name: Publish Official Signed GitHub Release (APK + AAB + SHA256)
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          tag_name: v1.0.${{ github.run_number }}-VIP
+          name: "LuminaMed VIP (کلینیک‌یار VIP) Signed Android Release v1.0.${{ github.run_number }}"
+          body_path: android/release-dist/release-signing-report.txt
+          draft: false
+          prerelease: false
+          files: |
+            android/release-dist/LuminaMed-VIP-v1.0.0-signed.apk
+            android/release-dist/LuminaMed-VIP-v1.0.0-signed.aab
+            android/release-dist/SHA256SUMS.txt
+            android/release-dist/release-signing-report.txt
