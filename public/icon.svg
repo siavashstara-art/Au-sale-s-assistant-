@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#022c22"/>
+      <stop offset="50%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="100" y1="80" x2="420" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fb7185"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="28" y="28" width="456" height="456" rx="90" stroke="url(#gold)" stroke-width="6" stroke-opacity="0.45"/>
+  <path d="M256 96L294 184L390 196L318 262L338 356L256 308L174 356L194 262L122 196L218 184L256 96Z" stroke="url(#gold)" stroke-width="16" stroke-linejoin="round" fill="rgba(251, 191, 36, 0.12)"/>
+  <circle cx="256" cy="242" r="36" fill="url(#gold)"/>
+  <text x="256" y="426" text-anchor="middle" fill="#fde68a" font-family="sans-serif" font-weight="800" font-size="42" letter-spacing="4">CLINICYAR VIP</text>
+</svg>

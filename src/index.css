@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Vazirmatn', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-display: 'Vazirmatn', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Vazirmatn', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #ffffff;
+    color: #0f172a;
+    overflow-x: hidden;
+    line-height: 1.75;
+  }
+
+  h1, h2, h3, .font-display {
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  /* High-visibility focus ring for keyboard & assistive navigation */
+  *:focus-visible {
+    outline: 3px solid #059669 !important;
+    outline-offset: 3px !important;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessibility Font Scale Classes */
+.a11y-font-lg {
+  font-size: 112%;
+}
+.a11y-font-xl {
+  font-size: 125%;
+}
+.a11y-spacing-wide {
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+  line-height: 2 !important;
+}
+
+/* Reduced Motion for ADHD & Vestibular Accessibility */
+.a11y-reduced-motion *,
+.a11y-reduced-motion *::before,
+.a11y-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Custom sleek light scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 6px;
+  border: 2px solid #f8fafc;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #059669;
+}
+
+

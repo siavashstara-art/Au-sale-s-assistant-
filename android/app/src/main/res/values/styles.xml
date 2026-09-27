@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.ClinicYarVIP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#022C22</item>
+        <item name="android:navigationBarColor">#020617</item>
+    </style>
+</resources>
